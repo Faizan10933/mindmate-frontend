@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OCR Image Upload</title>
+</head>
+<body>
+    <h1>Upload Image for OCR</h1>
+
+    <form action="/ocr" method="POST" enctype="multipart/form-data">
+        <input type="file" name="image" accept="image/*" required>
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if success %}
+        <p style="color: green; font-weight: bold;">Submitted successfully ✅</p>
+    {% endif %}
+</body>
+</html>
