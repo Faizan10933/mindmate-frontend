@@ -9,7 +9,7 @@ CORS(app)
 @app.route('/summary', methods=['GET'])
 def dashboard():
     try:
-        api_url = 'https://4e0cb01f9def.ngrok-free.app/summary'
+        api_url = 'https://995db971072b.ngrok-free.app/summary'
         response = requests.get(api_url)
         response.raise_for_status()
 
