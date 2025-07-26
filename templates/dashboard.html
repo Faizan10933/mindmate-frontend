@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Food Spend Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    .card { padding: 15px; border: 1px solid #ccc; margin-bottom: 20px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Food Spend Summary</h1>
+
+  <div class="card">
+    <h2>Total Amount Spent: ₹{{ summary.total_amount_spent }}</h2>
+  </div>
+
+  <div class="card">
+    <h3>Top Restaurants (by Visits)</h3>
+    <canvas id="restaurantChart"></canvas>
+  </div>
+
+  <div class="card">
+    <h3>Frequently Purchased Items</h3>
+    {% for restaurant, items in summary.frequently_purchased_items.items() %}
+      <strong>{{ restaurant }}</strong>: {{ items|join(', ') }}<br>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h3>Patterns</h3>
+    <ul>
+      {% for pattern in summary.patterns %}
+        <li><strong>{{ pattern.type }}</strong>: {{ pattern.description }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Recommendations</h3>
+    <ul>
+      {% for rec in summary.recommendations %}
+        <li>{{ rec }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('restaurantChart').getContext('2d');
+    const restaurantChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: {{ summary.top_restaurants | map(attribute='name') | list | tojson }},
+        datasets: [{
+          label: 'Visits',
+          data: {{ summary.top_restaurants | map(attribute='visits') | list | tojson }},
+          backgroundColor: 'rgba(54, 162, 235, 0.7)'
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
