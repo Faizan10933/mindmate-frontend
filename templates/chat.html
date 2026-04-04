@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receipt Chatbot</title>
+  <style>
+    body { font-family: Arial; margin: 2em; background: #f4f4f4; }
+    #chatbox { border: 1px solid #ccc; background: #fff; padding: 1em; height: 400px; overflow-y: auto; margin-bottom: 1em; }
+    .message { margin-bottom: 1em; }
+    .user { font-weight: bold; color: #007bff; }
+    .bot { font-weight: bold; color: #28a745; }
+  </style>
+</head>
+<body>
+
+  <h2>📊 Receipt Chatbot</h2>
+  <div id="chatbox"></div>
+
+  <input type="text" id="userInput" placeholder="Ask a question..." style="width: 80%;">
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const question = input.value.trim();
+      if (!question) return;
+
+      // Display user's message
+      const chatbox = document.getElementById("chatbox");
+      chatbox.innerHTML += `<div class="message"><span class="user">You:</span> ${question}</div>`;
+
+      input.value = "";
+
+      try {
+        const response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question: question })
+        });
+
+        const data = await response.json();
+        chatbox.innerHTML += `<div class="message"><span class="bot">Bot:</span> ${data.answer.replace(/\n/g, "<br>")}</div>`;
+        chatbox.scrollTop = chatbox.scrollHeight;
+      } catch (error) {
+        chatbox.innerHTML += `<div class="message"><span class="bot">Bot:</span> Error: ${error.message}</div>`;
+      }
+    }
+  </script>
+
+</body>
+</html>
